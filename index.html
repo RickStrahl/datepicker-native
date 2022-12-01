@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.0/css/all.css" integrity="sha512-ajhUYg8JAATDFejqbeN7KbF2zyPbbqz04dgOLyGcYEk/MJD3V+HJhJLKvJ2VVlqrr4PwHeGTTWxbI+8teA7snw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <h1>Native Date Picker</h1>
+    <div class="alert alert-info small">
+        <p>
+            Sample that demonstrates how to display and update dates using the native date Picker
+            control both using just a button or using the default date picker intput box.
+        </p>
+        <p>
+            This example uses a <b>DatePickerNative</b> helper class to facilitate binding
+            and unbinding of local time values as well as providing the CSS to show a
+            button-only date picker.
+        </p>
+    </div>
+    
+    <hr>
+    
+    <h3 class="mt-5">Date Picker Button</h3>
+    <hr>
+    
+    <label class="bold">
+        Select a date:
+    </label>
+    <div>
+        <span id="ActiveDate">
+        </span>
+    
+        <button id="DatePickerButton" class="datepicker-native-button btn btn-secondary btn-sm">
+            <i class="far fa-calendar-alt"></i>
+            <input id="DatePickerButtonInput" type="date" class="datepicker-native-button-input" />
+        </button>
+    </div>
+    
+    
+    <h3 class="mt-5">Date Picker Input Field</h3>
+    <hr>
+    
+    <label class="bold">
+        Select a date:
+    </label>
+    <div>
+        <span id="ActiveDateInput">
+        </span>
+    
+        <input id="DatePickerInput" type="date" 
+               class="form-control mt-2"
+               style="max-width: 10em"  />
+    </div>
+
+
+    
+    <style>
+        body {
+            padding: 1em;
+        }
+        .bold {
+            font-weight: 600;
+        }                
+    </style>
+    
+    <link rel="stylesheet" href="datepicker-native.css">
+    <script src="datepicker-native.js"></script>
+    <script src="date-formatter.js"></script>      
+    
+    <script>
+        var DateFormatter = new window.DateFormatter();
+
+        var startDate = new Date(2022,10,10);
+
+        console.log(DateFormatter.formatDate(startDate,"MMM dd, yyyy"));
+        
+         var el = document.getElementById("DatePickerButtonInput");
+         let dpn = new  DatePickerNative(el, startDate, function(dt, event) {                
+            // update date display
+            showDate(dt,"ActiveDate");
+            console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value");
+            
+            // element gets a dateValue property
+            var el = document.getElementById("DatePickerButtonInput");
+            console.log(DateFormatter.formatDate(el.dateValue,"dw MMM dd, yyyy")," Date on control");
+
+            // date control value
+            console.log(DateFormatter.formatDate(dpn.options.activeDate,"dw MMM dd, yyyy")," instance.option.activeDate");
+         });
+
+         // assign initial display value on page launch
+         showDate(startDate,"ActiveDate");
+
+         
+         var elInput = document.getElementById("DatePickerInput");
+         new DatePickerNative(elInput, startDate, function(dt, event) {
+            showDate(dt, "ActiveDateInput");
+            console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value Date Input control");
+         });
+         showDate(startDate,"ActiveDateInput");
+
+
+        // display helper
+
+         function showDate(dt,elId) {            
+            var sdt = DateFormatter.formatDate(dt,"dw MMM dd, yyyy");            
+            
+            document.getElementById(elId).innerText = sdt;            
+        }
+    </script>
+</body>
+</html>
