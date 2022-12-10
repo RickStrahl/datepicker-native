@@ -198,14 +198,34 @@ The component can directly bind dates and min/max values:
     v-on:update:dateValue="dateUpdated($event)"
     v-bind:min="7"
     v-bind:max="7"
-><date-picker-button
+></date-picker-button>
 ```       
 
-The one tricky bit is in the updating of the date when model binding using this expression which is required in order to update the date that your are binding to (`activeDate` in the example above).
+The one tricky bit is in the updating of the date which fires into a handler in code rather than updating a value directly. You can use the handler to update the underlying binding:
 
-```html
-v-on:update:dateValue="dateUpdated($event)"
-```
+```js
+export default {
+    name: "ServiceOrderListView",
+    components: { DatePickerButton },
+    data() {
+        vm = this; // hang on to proxy reference
+        return {
+            // this is our date binding value
+            activeDate: mdApp.global.lastAssignedServiceSearchDate,
+        };
+    },
+    methods: {
+        // Date Update Handler 
+        dateUpdated(newDate){
+            if (vm.activeDate === newDate) return;
+            vm.activeDate = newDate;
+            
+            // update filtered list after button clicked
+            vm.getServiceOrders();
+        }
+    }
+}    
+```        
 
 The  [date-picker-button.vue](vue/datepicker-button.vue) component is tiny and you can copy and drop it into your project as needed.
 
