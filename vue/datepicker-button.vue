@@ -4,6 +4,8 @@
 
         <input type="date" class="datepicker-button-input"
                :value="datePickerBind(dateValue)"
+               :min="normalizedMin"
+               :max="normalizedMax"
                @input="datePickerUnbind($event.target.valueAsDate,dateValue)"
         />
     </button>
@@ -24,6 +26,7 @@ buttonClass - full class string for the button (default: btn btn-secondary btn-s
 addButtonClass - adds these classes to the default class
 buttonStyle - additional style overrides for the button
 buttonIconClass - full class for icon (default: fad fa-calendar-alt fa-fw)
+min, max  - Minimum date to display (optional). String (2022-10-01), number of days, or date value
 
 emits:
 update:dateValue
@@ -40,18 +43,69 @@ export default {
         buttonClass: {type: String, default: "btn btn-secondary btn-sm datepicker-button" },
         addButtonClass: {type: String, default: "" },
         buttonStyle: {type: String, default: "" },
-        buttonIconClass: { type: String, default: "fad fa-calendar-alt fa-fw" }
+        buttonIconClass: { type: String, default: "fad fa-calendar-alt fa-fw" },
+        min: { type: [String, Date, Number],default: "1970-01-01" },
+        max: { type: [ String, Date, Number ], default:"2100-00-01"  }
     },
     methods: {
         datePickerBind(dt) {
-            return dt && new Date(dt.getTime()-(dt.getTimezoneOffset()*60*1000)).toISOString().split('T')[0];
+            return this.localToGmtDate(dt);
         },
 
         datePickerUnbind(dt) {
-            let newDate =  new Date(dt.getTime()+(dt.getTimezoneOffset()*60*1000));
+            let newDate =  this.utcToLocalDate(dt);
             this.$emit("update:dateValue",newDate, this.dateId);
-        }
+        },
+
+        localToGmtDate(localDate)
+        {
+            var dt = localDate && new Date(localDate.getTime() - (localDate.getTimezoneOffset() * 60 * 1000)).toISOString().split('T')[0];
+            console.log("localtoutc", dt);
+            return dt;
+        },
+
+        utcToLocalDate(utcDate) {
+
+            var dt = new Date(utcDate.getTime() + (utcDate.getTimezoneOffset() * 60 * 1000));
+            console.log("utctolocal", dt);
+            return dt;
+        },
     },
+    computed: {
+        normalizedMin(inst) {
+            if (!inst?.min) return inst;
+
+            let minVal = inst.min;
+            if (typeof minVal === "string")
+                return minVal;
+
+
+            if (typeof minVal === "number") {
+                let dt = new Date();
+                dt = new Date(dt.setDate(dt.getDate() - minVal));
+                minVal = dt;
+            }
+
+            return this.localToGmtDate(minVal);
+        },
+        normalizedMax(inst) {
+            if (!inst?.min) return inst;
+
+            let maxVal = inst.max;
+            if (typeof maxVal === "string")
+                return maxVal;
+
+            let dt = new Date();
+            if (typeof maxVal === "number") {
+               dt = new Date();
+               dt = new Date(dt.setDate(dt.getDate() + maxVal));
+               maxVal = dt;
+            }
+
+            return this.localToGmtDate(maxVal);
+        }
+
+    }
 }
 </script>
 

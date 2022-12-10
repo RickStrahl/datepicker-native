@@ -1,5 +1,5 @@
 /*
-    DatePickerNative 
+    DatePickerNative  (esm module syntax)
     ----------------
     Used to bind local dates to date controls and notify you on change
     with a native date.
@@ -57,6 +57,7 @@
     - converts a UTC/GMT time back to local time with the appropriate time zone
 
     Example:
+    import DatePickerNative from "./datepicker-native.esm.js"
 
     // select an input date element
     var el = document.getElementById("DatePickerButtonInput");
@@ -76,7 +77,6 @@
         showDate(dpn.Options.activeDate,"ActiveDate");
     });
     showDate(startDate,"ActiveDate");
-
 */
 function DatePickerNative(el, initialDate, callback) {
     var _this = this;
@@ -122,7 +122,7 @@ function DatePickerNative(el, initialDate, callback) {
         opt.element.removeEventListener("change",datePickerUnbind);        
     }
     
-    function datePickerBind(element, dt) {      
+    function datePickerBind(element, dt) {        
         var newDate = localToGmtDate(dt);
         
         opt.element.dateValue = dt;   // original date        
@@ -140,7 +140,7 @@ function DatePickerNative(el, initialDate, callback) {
         opt.element.dateValue = newDate;
         opt.activeDate = newDate;
 
-        if(opt.userCallback){            
+        if(opt.userCallback){
             opt.userCallback(newDate, event, _this);
         }
     }
@@ -186,3 +186,5 @@ function DatePickerNative(el, initialDate, callback) {
     intialize(opt);                
     return _this;
 }
+
+export default DatePickerNative;

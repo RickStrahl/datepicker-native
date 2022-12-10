@@ -3,7 +3,7 @@ let _DateFormatter = function() {
     // date formatting helpers
     const _monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November','December'];
     const _dayNames = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const _shortDayNames = [ 'Sun', 'Mon', 'Tues',  'Wed', 'Thur', 'Fri', 'Sat' ];
+    const _shortDayNames = [ 'Sun', 'Mon', 'Tue',  'Wed', 'Thu', 'Fri', 'Sat' ];
   
     this.formatDate = function formatDate(date, format = 'MM/dd/yyyy', emptyResult = '') {
         if (!date)
@@ -60,5 +60,5 @@ let _DateFormatter = function() {
     }
 }
 
-// Static Global Instance
-DateFormatter = new _DateFormatter();
+let DateFormatter = new _DateFormatter();
+export default DateFormatter;

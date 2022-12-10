@@ -1,10 +1,41 @@
-# Native JavaScript Date Picker
+# DatePicker Native Helper
 
-This repo holds a few components that make it easier to use the native date time pickers within applications.
+This repo holds a couple of HTML date control helpers to make it easier to bind and unbind dates to the control and display dates. 
 
-* Native DatePicker local time translation
-* Button only date lookups 
+* Assign dates directly to any `<input type="date" />`
+* Button only date popups (ie. no input box)
 * Vue Component for Button Lookups
+
+## Basic Usage
+The idea with this component is that you use JavaScript code to assign a date via code to an input element:
+
+```js
+var el = document.getElementById("StartDate");
+var startDate = new Date();
+
+// assign date and get notified on changes
+var dateControl = DatePickerNative(el, startDate, 
+   function(dt, event, instance) {
+       // ... do something with changed `dt` value
+   });
+```
+
+Alternately you can also pick up the control's current date value via:
+
+```js
+var newDate = dateControl.Options.activeDate;
+
+
+```
+
+
+
+## Date Control Date Assignment
+The `<input type="date" />` control can be used to display dates, but it has an awkward way to accept date inputs as it requires **date strings in GMT time format**, which means dates have to be converted. The `DatePickerNative` component allows you to assign a date directly to a control and - optionally - be notified when the date changes. 
+
+The component also adds a `dateValue` property to the `<input type="date" />` element that you can directly access after the component has been initialized.
+
+
 
 ## Button Only Lookups
 The genesis of this example was my need to add a date picker to an application that is based on a button, rather than on a full `<input type='date' />` control. As you know the input control provides a date picker popup but it doesn't directly support just popping up the date picker without the input control. 

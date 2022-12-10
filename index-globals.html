@@ -20,26 +20,26 @@
             button-only date picker.
         </p>
     </div>
-
+    
     <hr>
-
+    
     <h3 class="mt-5">Date Picker Button</h3>
     <hr>
-
+    
     <label class="bold">
         Select a date:
     </label>
     <div>
         <span id="ActiveDate">
         </span>
-
+    
         <button id="DatePickerButton" class="datepicker-native-button btn btn-secondary btn-sm">
             <i class="far fa-calendar-alt"></i>
             <input id="DatePickerButtonInput" type="date" class="datepicker-native-button-input" />
         </button>
     </div>
-
-
+    
+    
     <h3 class="mt-5">Date Picker Input Field</h3>
     <hr>
 
@@ -55,7 +55,7 @@
     </div>
 
 
-
+    
     <style>
         body {
             padding: 1em;
@@ -67,23 +67,17 @@
             width: 10em;
         }
     </style>
-
+    
     <link rel="stylesheet" href="datepicker-native.css">
-
-    <!--
-    *** USM globals use these imports instead:
+    <!-- USM globals use this:-->
     <script src="datepicker-native.js"></script>
     <script src="date-formatter.js"></script>
-    -->
-
-    <script type="module">
-        import  DatePickerNative from "./datepicker-native.esm.js";
-        import  DateFormatter from "./date-formatter.esm.js";
-
-        var startDate = new Date(2022,11,1);
+    
+    <script>        
+        var startDate = new Date(2022,10,10);
 
         console.log(DateFormatter.formatDate(startDate,"MMM dd, yyyy"));
-
+        
          var el = document.getElementById("DatePickerButtonInput");
 
         // option configuration syntax        
@@ -110,7 +104,7 @@
          // assign initial display value on page launch
          showDate(startDate,"ActiveDate");
 
-
+         
         var elInput = document.getElementById("DatePickerInput");
 
          // parameter syntax - Standard Date Input control
