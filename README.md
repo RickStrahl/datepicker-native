@@ -1,4 +1,4 @@
-# DatePicker Native Helper Date Button
+# DatePicker Native Helpers and Button Only Date Picker
 This repo holds a couple of HTML date helpers to make it easier to bind and unbind date values to `<input type='date' />` controls. It also includes an example on how to pop up a date button. 
 
 * Assign dates directly to any `<input type="date" />`
