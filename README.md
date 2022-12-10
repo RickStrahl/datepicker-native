@@ -201,7 +201,7 @@ The component can directly bind dates and min/max values:
 ></date-picker-button>
 ```       
 
-The one tricky bit is in the updating of the date which fires into a handler in code rather than updating a value directly. You can use the handler to update the underlying binding:
+Date value binding is one way only, and instead you have to handle an event to capture and update the new date value - `dateUpdated()` in the code below:
 
 ```js
 export default {
@@ -218,14 +218,18 @@ export default {
         // Date Update Handler 
         dateUpdated(newDate){
             if (vm.activeDate === newDate) return;
+            
+            // this updates the model
             vm.activeDate = newDate;
             
-            // update filtered list after button clicked
+            // now re-run the filtered list with the new date
             vm.getServiceOrders();
         }
     }
 }    
-```        
+```  
+
+**Note:** The event does not fire if you select the currently selected date - the value has to actually change for the event to fire.
 
 The  [date-picker-button.vue](vue/datepicker-button.vue) component is tiny and you can copy and drop it into your project as needed.
 
