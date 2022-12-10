@@ -1,13 +1,76 @@
-# DatePicker Native Helper
-
-This repo holds a couple of HTML date control helpers to make it easier to bind and unbind dates to the control and display dates. 
+# DatePicker Native Helper Date Button
+This repo holds a couple of HTML date helpers to make it easier to bind and unbind date values to `<input type='date' />` controls. It also includes an example on how to pop up a date button. 
 
 * Assign dates directly to any `<input type="date" />`
+* Fixes up date values to correctly display date timezones
+* Allows options for easy limiting min/max date inputs
 * Button only date popups (ie. no input box)
-* Vue Component for Button Lookups
+* **date-picker-button** Vue Component
 
-## Basic Usage
-The idea with this component is that you use JavaScript code to assign a date via code to an input element:
+Why this library? The way the date input control works sucks, as dates have to be formatted as a string in `ISO8601` format without a time compoent:
+
+```html
+<input type="date" 
+       value="2022-11-29" 
+       min="2022-10-30" max="2022-12-05"/>
+```
+
+This process is further complicated by the fact that the date has to be a UTC date (no time zone), while time values like `new Date()` tend to be local time values which have a time zone applied. In order to reliably bind a date, the time component has to be adjusted to reflect the time zone offset. This small library adjusts the date and spits out the correct format for binding both for the `value` and `min`/`max` values.
+
+Additionally there's a Vue component that provides a button based date picker that uses a button without the input control. An HTML/CSS example how to create button date picker behavior is also provided below.
+
+## Basic JavaScript Usage
+This component works as a very simple control binder. You call a function and pass in an element, date and callback for notification when the date value is changed.
+
+### Loading the library
+There are two versions:
+
+* Using ESM Module - datepicker-native.esm.js
+* Global declares - datepicker-native.js
+
+#### Using ESM Module
+You can use ES 2015+ syntax to load via ESM module loading and then access `DatePickerNative`:
+
+```html
+ <script type="module">
+   import  DatePickerNative from "./datepicker-native.esm.js";
+       
+   // parameters
+   var dateControl = DatePickerNative(el, startDate, callBack);
+   
+   // or Options
+   var dateControl2 = DatePickerNative({ 
+       element: el,
+       activeDate: startDate,
+       callback: callback,
+       min: 5, max: 5
+   });
+   ...
+</script>   
+```
+
+#### Global Declarations
+If you're not using ESM module you can use global access to the `DatePickerNative` instance by importing the script:
+
+```html
+<script src="datepicker-native.js"></script>
+<script>
+   // parameters
+   var dateControl = DatePickerNative(el, startDate, callBack);
+   
+   // or Options
+   var dateControl2 = DatePickerNative({ 
+       element: el,
+       activeDate: startDate,
+       callback: callback,
+       min: 5, max: 5
+   });
+   ...
+</script>
+```
+
+### Usage
+The idea with this component is that you can use JavaScript code to assign a date via code to an input element:
 
 ```js
 var el = document.getElementById("StartDate");
@@ -20,42 +83,44 @@ var dateControl = DatePickerNative(el, startDate,
    });
 ```
 
-Alternately you can also pick up the control's current date value via:
+You can also use the *Options Syntax* instead:
 
 ```js
-var newDate = dateControl.Options.activeDate;
+var elInput = document.getElementById("DatePickerInput");
 
-
+// parameter syntax - Standard Date Input control
+var dateControl = new DatePickerNative({ 
+    element: elInput, 
+    activeDate: startDate, 
+    // + or - 5 days min date restriction
+    // optional. date, or string date also work
+    min: 5,             
+    max: 5, 
+    callback: function(dt, event, instance) {
+        // do something with the update `dt` date
+    } 
+});
 ```
 
+##  DatePicker Input and DatePicker Button
+The native date picker control only works with a full input control that displays both the date input with a button to pop up the selection calendar which looks like this:
 
+![](images/DatePickerInput.png)
 
-## Date Control Date Assignment
-The `<input type="date" />` control can be used to display dates, but it has an awkward way to accept date inputs as it requires **date strings in GMT time format**, which means dates have to be converted. The `DatePickerNative` component allows you to assign a date directly to a control and - optionally - be notified when the date changes. 
-
-The component also adds a `dateValue` property to the `<input type="date" />` element that you can directly access after the component has been initialized.
-
-
-
-## Button Only Lookups
-The genesis of this example was my need to add a date picker to an application that is based on a button, rather than on a full `<input type='date' />` control. As you know the input control provides a date picker popup but it doesn't directly support just popping up the date picker without the input control. 
-
-To facility this functionality this library provides a `DatePickerNative()` class that you can use from raw JavaScript, or the `datepicker-button` Vue component that lets you quickly add this functionality to your own apps. 
+If you would rather display a just a button and pop up the calendar without displaying the input box you can use some custom CSS and HTML layout to accomplish a button only display like this:
 
 ![](images/DatePickerButton.png)
 
-## Local Date Fix ups
-The date picker input control by default uses UTC dates, so the date picker often displays a value that is not representative of the user's local time. This gives unexpected results. To fix this the simple `DatePickerNative` component automatically fixes up the date both on binding and unbinding values. The control provides the updated value via notification with a callback (in the plain JS version) or an emitted event (in the Vue version).
+The `date-picker-button.vue` component provides this button as a drop in component. If you're using plain HTML/CSS/JavaScript the following describes how to create a DatePicker button that effectively hides the input control.
 
-## How it works
-To create a button only involves a few steps:
+## A DatePicker Button with plain HTML/CSS
+A few steps are involved in creating a DatePicker Button:
 
 * Add the button HTML
 * Add `DatePickerNative.js` library
 * Add `DatePickerNative.css` styles (small so you can inline these)
 
-
-We'll start with the HTML:
+We'll start with the HTML which basically wraps a `<input type="date" />` control into an HTML button:
 
 ```html
 <button id="DatePicker" class="datepicker-native btn btn-secondary btn-sm">
@@ -64,20 +129,20 @@ We'll start with the HTML:
 </button>
 ```
 
-I'm using **font-awesome** for the icon here, but you can use whatever you like for the content for the button - text, image, icon, it doesn't matter. The `btn` styles are **bootstrap** and likewise, you can use whatever you want or no styling for the button.
+I'm using **font-awesome** for the icon here, but you can use whatever you like for the content for the button - text, image, icon, it doesn't matter. The `btn` styles are **bootstrap** but again, you can use whatever you want or no styling at all for the button.
 
 The important, required pieces are the two styles:  
 
 * **datepicker-native** on the button
 * **datepicker-native-input** on the embedded `<input type="date" />` control
 
-The trick to making the button work without the input control is to effectively making it invisible, but still active and overlaying the button content over it. The key to this is the CSS:
+The trick to making the button work without the input control is to effectively making it invisible, but still active and overlaying the button content over it. The key to this is the CSS ([datepicker-native.css](datepicker-native.css)):
 
 ```css
-.datepicker-native {
+.datepicker-native-button {
     position: relative;
 }
-.datepicker-native-input {
+.datepicker-native-button-input {
     position: absolute;
     overflow: hidden;
     width: 100%;
@@ -86,7 +151,7 @@ The trick to making the button work without the input control is to effectively 
     top: 0;
     opacity: 0;
 }
-.datepicker-native-input::-webkit-calendar-picker-indicator {
+.datepicker-native-button-input::-webkit-calendar-picker-indicator {
     position: absolute;
     right: 0;
     width: 100%;
@@ -117,164 +182,30 @@ DatePickerNative(el, startDate, function(dt, event) {
 showDate(startDate,"ActiveDate");
 ```
 
-## Also works for plain Date Controls
-The same handling also works for plain DatePicker controls which is useful as it handles the automatic date UTC to local date conversions.
-
-For full input control the code is the same:
-
-```js
- var elInput = document.getElementById("DatePickerInput");
- DatePickerNative(elInput, startDate, function(dt, event) {
-    showDate(dt, "ActiveDateInput");
- });
- showDate(startDate,"ActiveDateInput");
-```
-
-The behavior here is the default dropdown behavior, but with the benefit of the adjusted local date.
-
-![](images/DatePickerInput.png)
-
-The HTML for this use case is just the plain input control:
-
-```html
-<input id="DatePickerInput" type="date" class="form-control" />
-```
-
-and the custom CSS is not required as that only pertains to the button.
-
-## Plain JavaScript
-Because this component uses plain, old JavaScript it'll work in any environment which is the point of using the native control interface. 
+You can look at the examples in [index.html](index.html) (ESM Modules) and [index-globals.html](index-globals.html) (global declare).
+erface. 
 
 ## Vue Component
 For good measure I ran into all of this originally within a Vue application and I initially build a Vue component for a drop-in `data-button` component only later backfitting the plain JS component. 
 
-The Vue version is a bit less generic as it uses bootstrap and font-awesome in the template, but you might find this useful anyway as you can customize the layout for your own application.
+The Vue version is a bit less generic as it uses bootstrap and font-awesome in the template, but you can customize the template as you see fit.
 
-Here's the Vue Component:
-
-```html
-<template>
-    <button v-bind:class="buttonClass  + ' ' + addButtonClass" v-bind:title="title">
-        <i v-bind:class="buttonIconClass"></i>
-
-        <input type="date" class="datepicker-button-input"
-               :value="datePickerBind(dateValue)"
-               @input="datePickerUnbind($event.target.valueAsDate,dateValue)"
-        />
-    </button>
-</template>
-
-<script>
-/*
-Native Date Picker Button
--------------------------
-
-This is a native date picker button.
-
-properties:
-title - title text for the button
-dateValue - initial date (note this value is not updated)
-dateId - optional unique ID for this date so you can differentiate for the update event
-buttonClass - full class string for the button (default: btn btn-secondary btn-sm datepicker-button)
-addButtonClass - adds these classes to the default class
-buttonStyle - additional style overrides for the button
-buttonIconClass - full class for icon (default: fad fa-calendar-alt fa-fw)
-
-emits:
-update:dateValue
-- fired when the date is changed.
- */
-export default {
-    name:"DatePickerButton",
-
-    props: {
-        title: {type: String, default: "Select a date"},
-        dateValue: {type: Date, default: new Date() },
-        dateId: { type: String, default: new Date().getTime().toString() },
-
-        buttonClass: {type: String, default: "btn btn-secondary btn-sm datepicker-button" },
-        addButtonClass: {type: String, default: "" },
-        buttonStyle: {type: String, default: "" },
-        buttonIconClass: { type: String, default: "fad fa-calendar-alt fa-fw" }
-    },
-    methods: {
-        datePickerBind(dt) {
-            return dt && new Date(dt.getTime()-(dt.getTimezoneOffset()*60*1000)).toISOString().split('T')[0];
-        },
-
-        datePickerUnbind(dt) {
-            let newDate =  new Date(dt.getTime()+(dt.getTimezoneOffset()*60*1000));
-            this.$emit("update:dateValue",newDate, this.dateId);
-        }
-    },
-}
-</script>
-
-<style scoped>
-.datepicker-button {
-    position: relative;
-}
-.datepicker-button-input {
-    position: absolute;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    right: 0;
-    top: 0;
-    opacity: 0;
-}
-.datepicker-button-input::-webkit-calendar-picker-indicator {
-    position: absolute;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    opacity: 0;
-    cursor: pointer;
-}
-</style>
-```
-
-The difference here is that hte component raises an event `update:dateValue` which the host can listen to.
-
-Using the component then looks like this:
+The component can directly bind dates and min/max values:
 
 ```html
 <date-picker-button
     v-bind:date-value="activeDate"
     v-on:update:dateValue="dateUpdated($event)"
->
-</date-picker-button>
-```
+    v-bind:min="7"
+    v-bind:max="7"
+><date-picker-button
+```       
 
-to handle the event and update the value:
-
-
-```js
-export default {
-    components: {DatePickerButton},
-    ...
-    data() {
-        vm = this;  // hang on to proxy reference
-        return {
-            activeDate: new Date()
-        };
-    },
-    methods: {
-        dateUpdated(newDate){
-            if (vm.activeDate === newDate) return;
-
-            vm.activeDate = newDate;
-            vm.global.lastAssignedTaskSearchDate = newDate;
-            vm.getJobTasks();
-        },
-    }
-```
-
-You could also remove the code method and do the following instead:
+The one tricky bit is in the updating of the date when model binding using this expression which is required in order to update the date that your are binding to (`activeDate` in the example above).
 
 ```html
-v-on:update:dateValue="activeDate = $event"
+v-on:update:dateValue="dateUpdated($event)"
 ```
+
+The  [date-picker-button.vue](vue/datepicker-button.vue) component is tiny and you can copy and drop it into your project as needed.
 
