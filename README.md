@@ -2,12 +2,12 @@
 This repo holds a couple of HTML date helpers to make it easier to bind and unbind date values to `<input type='date' />` controls. It also includes an example on how to pop up a date button. 
 
 * Assign dates directly to any `<input type="date" />`
-* Fixes up date values to correctly display date timezones
+* Fixes up date values to correctly display date time zones
 * Allows options for easy limiting min/max date inputs
 * Button only date popups (ie. no input box)
 * **date-picker-button** Vue Component
 
-Why this library? The way the date input control works sucks, as dates have to be formatted as a string in `ISO8601` format without a time compoent:
+Why this library? The way the date input control works sucks, as dates have to be formatted as a string in `ISO8601` format without a time component:
 
 ```html
 <input type="date" 
@@ -186,7 +186,7 @@ You can look at the examples in [index.html](index.html) (ESM Modules) and [inde
 erface. 
 
 ## Vue Component
-For good measure I ran into all of this originally within a Vue application and I initially build a Vue component for a drop-in `data-button` component only later backfitting the plain JS component. 
+For good measure I ran into all of this originally within a Vue application and I initially build a Vue component for a drop-in `data-button` component only later back-fitting the plain JS component. 
 
 The Vue version is a bit less generic as it uses bootstrap and font-awesome in the template, but you can customize the template as you see fit.
 
