@@ -8,12 +8,12 @@ pass in a local date, get back a local date
 * Button only date popups (ie. no input box)
 * **date-picker-button** Vue Component
 
-Why this library? The way the date input control works sucks, as dates have to be formatted as a string in `ISO8601` format without a time component:
+Why this library? The way the date input controls natively works is a pain, as dates have to be formatted as a string in `ISO8601` format without a time component:
 
 ```html
 <input type="date" 
        value="2022-11-29" 
-       min="2022-10-30" max="2022-12-05"/>
+       min="" max="2022-12-05"/>
 ```
 
 This process is further complicated by the fact that the date has to be a UTC date (no time zone), while time values like `new Date()` tend to be local time values which have a time zone applied. In order to reliably bind a date, the time component has to be adjusted to reflect the time zone offset. This small library adjusts the date and spits out the correct format for binding both for the `value` and `min`/`max` values.
@@ -36,7 +36,7 @@ You can use ES 2015+ syntax to load via ESM module loading and then access `Date
  <script type="module">
    import  DatePickerNative from "./datepicker-native.esm.js";
        
-   var callback = function(dt, event) {
+   var callback = function(dt, event, instance) {
     console.log(dt);  // changed date
    }
 
@@ -67,7 +67,7 @@ If you're not using ESM module you can use global access to the `DatePickerNativ
    var dateControl2 = DatePickerNative({ 
        element: el,
        activeDate: startDate,
-       callback: callback,
+       onDateChanged: callback,
        min: 5, max: 5
    });
    ...
@@ -101,7 +101,7 @@ var dateControl = new DatePickerNative({
     // optional. date, or string date also work
     min: 5,             
     max: 5, 
-    callback: function(dt, event, instance) {
+    onDateChanged: function(dt, event, instance) {
         // do something with the update `dt` date
     } 
 });
@@ -136,7 +136,7 @@ We'll start with the HTML which basically wraps a `<input type="date" />` contro
 
 I'm using **font-awesome** for the icon here, but you can use whatever you like for the content for the button - text, image, icon, it doesn't matter. The `btn` styles are **bootstrap** but again, you can use whatever you want or no styling at all for the button.
 
-The important, required pieces are the two styles:  
+The important, **required pieces are the two styles**:  
 
 * **datepicker-native** on the button
 * **datepicker-native-input** on the embedded `<input type="date" />` control
@@ -234,7 +234,15 @@ export default {
 }    
 ```  
 
-**Note:** The event does not fire if you select the currently selected date - the value has to actually change for the event to fire.
+> **Note:** The event does not fire if you select the currently selected date - the value has to actually change for the event to fire.
 
 The  [date-picker-button.vue](vue/datepicker-button.vue) component is tiny and you can copy and drop it into your project as needed.
 
+
+## License
+
+Licensed under the MIT License. There's no charge to use, integrate or modify the code for this project. You are free to use it in personal, commercial, government and any other type of application.
+
+### Warranty Disclaimer: No Warranty!
+
+IN NO EVENT SHALL THE AUTHOR, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THIS PROGRAM AND DOCUMENTATION, BE LIABLE FOR ANY COMMERCIAL, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM INCLUDING, BUT NOT LIMITED TO, LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR LOSSES SUSTAINED BY THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS, EVEN IF YOU OR OTHER PARTIES HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
