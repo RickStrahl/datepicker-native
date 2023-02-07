@@ -2,7 +2,8 @@
 This repo holds a couple of HTML date helpers to make it easier to bind and unbind date values to `<input type='date' />` controls. It also includes an example on how to pop up a date button. 
 
 * Assign dates directly to any `<input type="date" />`
-* Fixes up date values to correctly display date time zones
+* Fixes up date values for the local timezone  
+pass in a local date, get back a local date
 * Allows options for easy limiting min/max date inputs
 * Button only date popups (ie. no input box)
 * **date-picker-button** Vue Component
@@ -35,14 +36,18 @@ You can use ES 2015+ syntax to load via ESM module loading and then access `Date
  <script type="module">
    import  DatePickerNative from "./datepicker-native.esm.js";
        
+   var callback = function(dt, event) {
+    console.log(dt);  // changed date
+   }
+
    // parameters
-   var dateControl = DatePickerNative(el, startDate, callBack);
+   var dateControl = DatePickerNative(el, startDate, callback);
    
    // or Options
    var dateControl2 = DatePickerNative({ 
        element: el,
        activeDate: startDate,
-       callback: callback,
+       onDateChanged: callback,
        min: 5, max: 5
    });
    ...

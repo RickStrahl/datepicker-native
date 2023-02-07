@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.0/css/all.css" integrity="sha512-ajhUYg8JAATDFejqbeN7KbF2zyPbbqz04dgOLyGcYEk/MJD3V+HJhJLKvJ2VVlqrr4PwHeGTTWxbI+8teA7snw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>Native Date Picker</h1>
+    <h1>Native Date Picker (USM Script)</h1>
     <div class="alert alert-info small">
         <p>
             Sample that demonstrates how to display and update dates using the native date Picker
@@ -69,6 +69,7 @@
     </style>
     
     <link rel="stylesheet" href="datepicker-native.css">
+
     <!-- USM globals use this:-->
     <script src="datepicker-native.js"></script>
     <script src="date-formatter.js"></script>
@@ -84,10 +85,10 @@
         let dpn = new  DatePickerNative({            
             element: el,
             activeDate: startDate,
-            // + or - 5 days
+            // + or - 5 days - optional
             min: 5,
             max: 5,
-            callback: function(dt, event) {
+            onDateChanged: function(dt, event) {
                 // update date display
                 showDate(dt,"ActiveDate");
                 console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value");
@@ -110,10 +111,8 @@
          // parameter syntax - Standard Date Input control
          new DatePickerNative({ 
             element: elInput, 
-            activeDate: startDate, 
-            // - 5 days min - open ended max date
-            min: 5,             
-            callback: function(dt, event) {
+            activeDate: startDate,                  
+            onDateChanged: function(dt, event, instance) {
                 showDate(dt, "ActiveDateInput");
                 console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value Date Input control");
             }        

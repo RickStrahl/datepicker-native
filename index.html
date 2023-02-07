@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.1.0/css/all.css" integrity="sha512-ajhUYg8JAATDFejqbeN7KbF2zyPbbqz04dgOLyGcYEk/MJD3V+HJhJLKvJ2VVlqrr4PwHeGTTWxbI+8teA7snw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-    <h1>Native Date Picker</h1>
+    <h1>Native Date Picker (ES Module)</h1>
     <div class="alert alert-info small">
         <p>
             Sample that demonstrates how to display and update dates using the native date Picker
@@ -80,11 +80,9 @@
         import  DatePickerNative from "./datepicker-native.esm.js";
         import  DateFormatter from "./date-formatter.esm.js";
 
-        var startDate = new Date(2022,11,1);
-
-        console.log(DateFormatter.formatDate(startDate,"MMM dd, yyyy"));
-
-         var el = document.getElementById("DatePickerButtonInput");
+        var startDate = new Date(2023,1,7);
+        var el = document.getElementById("DatePickerButtonInput");
+         
 
         // option configuration syntax        
         let dpn = new  DatePickerNative({            
@@ -92,10 +90,12 @@
             activeDate: startDate,
             // + or - 5 days
             min: 5,
-            max: 5,
-            callback: function(dt, event) {
+            max: 10,
+            // passed Date and Event object
+            onDateChanged: function(dt, event, instance) {                
                 // update date display
                 showDate(dt,"ActiveDate");
+
                 console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value");
 
                 // element gets a dateValue property
@@ -112,14 +112,12 @@
 
 
         var elInput = document.getElementById("DatePickerInput");
-
+        
          // parameter syntax - Standard Date Input control
          new DatePickerNative({ 
             element: elInput, 
-            activeDate: startDate, 
-            // - 5 days min - open ended max date
-            min: 5,             
-            callback: function(dt, event) {
+            activeDate: startDate,             
+            onDateChanged: function(dt, event, instance) {                
                 showDate(dt, "ActiveDateInput");
                 console.log(DateFormatter.formatDate(dt,"dw MMM dd, yyyy")," Callback date value Date Input control");
             }        
@@ -130,6 +128,7 @@
         // display helper
 
          function showDate(dt,elId) {
+            console.log(dt);
             var sdt = DateFormatter.formatDate(dt,"dw MMM dd, yyyy");
 
             document.getElementById(elId).innerText = sdt;

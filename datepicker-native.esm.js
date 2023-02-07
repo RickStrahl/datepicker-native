@@ -7,7 +7,7 @@
     Syntax:
     initialize the control:
 
-    DatePickerNative(el | options, intialDate, callback)
+    DatePickerNative(el | options, intialDate, onDateChanged)
 
     This control sets the following values from the incoming and updated dates:
 
@@ -20,7 +20,7 @@
     el: DOM Element or element id string
     options: Options structure of values (see below)
     initialDate: Date value to initially display. If empty current date is used
-    callback: A callback function when the date is changed. Receives 3 parameters:
+    onDateChanged: A callback function when the date is changed. Receives 3 parameters:
               function(newDate, event, instance) { }
               newDate: The new date in local time format
               event: The change event of the date picker
@@ -36,7 +36,7 @@
         element: DOM Element | string id,
         activeDate: initial or updated date used in the control
         min, max  - Min/max date to display (optional). String (2022-10-01), number of days, or date value
-        userCallback: function(newDate, event, instance) { }
+        onDateChanged: function(newDate, event, instance) { }
     }
 
     Functions:
@@ -78,7 +78,7 @@
     });
     showDate(startDate,"ActiveDate");
 */
-function DatePickerNative(el, initialDate, callback) {
+function DatePickerNative(el, initialDate, onDateChanged) {
     var _this = this;
     var opt = null;
     
@@ -100,10 +100,10 @@ function DatePickerNative(el, initialDate, callback) {
     else {
         opt =  {
             element: el,
-            userCallback: callback,
+            onDateChanged: onDateChanged,
             activeDate: initialDate,
-            min: "",
-            max: ""        
+            min: "",  // number as string
+            max: ""   // number as string     
         };        
     }
     this.options = opt;
@@ -114,7 +114,7 @@ function DatePickerNative(el, initialDate, callback) {
 
         if (opt.element) {
             opt.element.addEventListener("change",datePickerUnbind);     
-            datePickerBind(opt.element,opt.activeDate, opt.userCallback);
+            datePickerBind(opt.element,opt.activeDate, opt.onDateChanged);
         }
     }    
 
@@ -127,21 +127,22 @@ function DatePickerNative(el, initialDate, callback) {
         
         opt.element.dateValue = dt;   // original date        
         opt.element.value = newDate;
-        
-        opt.element.min = normalizeMin(opt.min);
-        opt.element.max = normalizeMax(opt.max);
+
+        if (opt.min)
+            opt.element.min = normalizeMin(opt.min);        
+        if (opt.max)
+            opt.element.max = normalizeMax(opt.max);
     }
     
-    function datePickerUnbind(event) {
+    function datePickerUnbind(event) {        
         var dt = event.target.valueAsDate;
         let newDate =  utcToLocalDate(dt);
         
-
         opt.element.dateValue = newDate;
         opt.activeDate = newDate;
 
-        if(opt.userCallback){
-            opt.userCallback(newDate, event, _this);
+        if(opt.onDateChanged){
+            opt.onDateChanged(newDate, event, _this);
         }
     }
 
@@ -157,7 +158,6 @@ function DatePickerNative(el, initialDate, callback) {
         if (typeof minVal === "string")
             return minVal;
 
-
         if (typeof minVal === "number") {
             let dt = new Date();
             dt = new Date(dt.setDate(dt.getDate() - minVal));
@@ -168,7 +168,6 @@ function DatePickerNative(el, initialDate, callback) {
     }
 
     function normalizeMax(maxVal) {
-        
         if (typeof maxVal === "string") {            
             return maxVal;
         }
